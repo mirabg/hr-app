@@ -79,6 +79,11 @@ export const Signup = () => {
         className="p-4 border rounded bg-light"
       >
         <h4 className="mb-3 text-center">Sign Up</h4>
+        {/* Note for users about HR-created records */}
+        <p className="text-center text-muted small mb-3">
+          You employee record must first be created by HR. If your profile has
+          not been setup by HR you will not be able to sign up or login
+        </p>
 
         <div className="mb-3">
           <label className="form-label">Email address</label>
