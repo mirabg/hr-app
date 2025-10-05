@@ -1,4 +1,64 @@
 {
-  "posts": [{ "id": 1, "title": "json-server", "author": "typicode" }],
-  "comments": [{ "id": 1, "body": "some comment", "postId": 1 }]
+  "users": [
+    {
+      "id": "1",
+      "password": "password123",
+      "userType": "HR",
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "hr@somewhere.com",
+      "isSignedUp": true
+    },
+    {
+      "id": "0e3d",
+      "firstName": "Gregory",
+      "lastName": "Mirabito",
+      "email": "greg_mirabito@yahoo.com",
+      "address": "16 Nonantum Rd",
+      "city": "Plymouth",
+      "state": "MA",
+      "zipcode": "02360",
+      "department": "Software Engineering",
+      "userType": "Employee",
+      "isSignedUp": true,
+      "password": "work11"
+    },
+    {
+      "id": "06c7",
+      "firstName": "Dale",
+      "lastName": "Davis",
+      "email": "dd@dd.com",
+      "address": "22 test st",
+      "city": "Boston",
+      "state": "MA",
+      "zipcode": "00000",
+      "department": "Finance",
+      "userType": "Employee",
+      "isSignedUp": false,
+      "password": null
+    }
+  ],
+  "leaveRequests": [
+    {
+      "id": "a612",
+      "userId": "0e3d",
+      "date": "2025-10-05",
+      "reason": "test",
+      "status": "Denied"
+    },
+    {
+      "id": "ba3e",
+      "userId": "0e3d",
+      "date": "2025-10-06",
+      "reason": "test2",
+      "status": "Denied"
+    },
+    {
+      "id": "c8e8",
+      "userId": "0e3d",
+      "date": "2025-10-08",
+      "reason": "test 3",
+      "status": "Approved"
+    }
+  ]
 }
