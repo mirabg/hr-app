@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Link, Outlet, useLocation, useMatch } from "react-router-dom";
+import { Outlet, useLocation, useMatch } from "react-router-dom";
 import axios from "axios";
 import ManageLeaveReqeusts from "./ManageLeaveReqeusts";
 import useNotification from "../context/useNotification";
 import EditEmployeeProfile from "./EditEmployeeProfile";
 import HrEditEmployeeProfile from "./HrEditEmployeeProfile";
 import EmployeeCard from "./EmployeeCard";
+import AddEmployee from "./AddEmployee";
 
 const HrDashboard = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const HrDashboard = () => {
   const editMatch = useMatch("/hrDashboard/editEmployee/:id");
   const [showEditEmp, setShowEditEmp] = useState(false);
   const [showManageLeave, setShowManageLeave] = useState(false);
+  const [showAddEmp, setShowAddEmp] = useState(false);
 
   const handleEditButtonClicked = (name, id) => {
     console.log("handleEditButtonClicked", name, id);
@@ -28,18 +30,42 @@ const HrDashboard = () => {
       setHrEditingId(null);
       setShowManageLeave(false);
       setShowEditEmp(false);
+      setShowAddEmp(false);
       return;
     } else if (name === "Manage Leave") {
       setManageLeaveEmpId(id);
       setHrEditingId(null);
       setShowManageLeave(true);
       setShowEditEmp(false);
+      setShowAddEmp(false);
     } else if (name === "Edit Employee Profile") {
       setHrEditingId(id);
       setManageLeaveEmpId(null);
       setShowEditEmp(true);
       setShowManageLeave(false);
+      setShowAddEmp(false);
+    } else if (name === "Add Employee") {
+      setShowAddEmp(true);
+      setHrEditingId(null);
+      setManageLeaveEmpId(null);
+      setShowEditEmp(false);
+      setShowManageLeave(false);
     }
+  };
+
+  const handleButtonClick = (name, id) => {
+    // specifically handle Add Employee button
+    if (name === "Add Employee") {
+      setShowAddEmp(true);
+      setShowManageLeave(false);
+      setShowEditEmp(false);
+      setManageLeaveEmpId(null);
+      setHrEditingId(null);
+      return;
+    }
+
+    // fallback to existing handling
+    handleEditButtonClicked(name, id);
   };
 
   const fetchEmployees = useCallback(async () => {
@@ -84,9 +110,12 @@ const HrDashboard = () => {
               <small className="d-block text-muted mb-2">
                 Use this to add a new employee to the system.
               </small>
-              <Link to="/hrDashboard/addEmployee" className="btn btn-primary">
+              <button
+                className="btn btn-primary"
+                onClick={() => handleButtonClick("Add Employee")}
+              >
                 Add Employee
-              </Link>
+              </button>
             </div>
           </div>
         )}
@@ -118,7 +147,7 @@ const HrDashboard = () => {
 
         {/* Management/Edit area - its own flex container */}
         <hr />
-        {(showManageLeave || showEditEmp) && (
+        {(showManageLeave || showEditEmp || showAddEmp) && (
           <div className="mt-5 bg-light border rounded p-3">
             {showManageLeave && (
               <div>
@@ -154,6 +183,28 @@ const HrDashboard = () => {
                 <EditEmployeeProfile idProp={editMatch.params.id} />
               ) : null}
             </div>
+
+            <div>
+              {showAddEmp && (
+                <AddEmployee
+                  onSaved={() => {
+                    // refresh list and close add form
+                    fetchEmployees();
+                    setShowAddEmp(false);
+                    if (notify && typeof notify.show === "function")
+                      notify.show("New employee added.");
+                  }}
+                  onCancel={() => handleEditButtonClicked(null, null)}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Outlet for nested routes */}
+        {!showManageLeave && !showEditEmp && !showAddEmp && (
+          <div className="mt-5">
+            <Outlet />
           </div>
         )}
       </div>

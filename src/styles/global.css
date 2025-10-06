@@ -1,0 +1,16 @@
+/* Global app spacing */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Add comfortable bottom spacing for the whole app */
+.app-container {
+  margin-bottom: 3rem; /* adjust as needed */
+}
+
+/* Ensure containers don't get clipped on small screens */
+.container {
+  padding-bottom: 1rem;
+}

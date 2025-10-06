@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useNotification from "../context/useNotification";
 
-const AddEmployee = () => {
+const AddEmployee = ({ onSaved, onCancel }) => {
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -46,6 +46,7 @@ const AddEmployee = () => {
       });
       if (res.status === 201 || res.status === 200) {
         setSuccess("Employee added successfully.");
+        const created = res.data;
         setForm({
           firstName: "",
           lastName: "",
@@ -56,13 +57,18 @@ const AddEmployee = () => {
           zipcode: "",
           department: "",
         });
-        // show global notification and navigate back to HR dashboard
+        // show global notification
         notify.show("Employee added successfully.");
-        // navigate with a refresh flag so HR dashboard can refetch
-        setTimeout(
-          () => navigate("/hrDashboard", { state: { refresh: true } }),
-          600
-        );
+        // if parent passed an onSaved handler (inline mode), call it
+        if (typeof onSaved === "function") {
+          onSaved(created);
+        } else {
+          // otherwise navigate back to HR dashboard with refresh flag
+          setTimeout(
+            () => navigate("/hrDashboard", { state: { refresh: true } }),
+            600
+          );
+        }
         return;
       } else {
         setError("Failed to add employee.");
@@ -160,9 +166,20 @@ const AddEmployee = () => {
         {error && <div className="text-danger">{error}</div>}
         {success && <div className="text-success">{success}</div>}
 
-        <div className="col-12">
+        <div className="col-12 d-flex gap-2">
           <button className="btn btn-primary" disabled={submitting}>
             {submitting ? "Adding..." : "Add Employee"}
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              // if parent provided onCancel (inline mode), call it; otherwise navigate back
+              if (typeof onCancel === "function") return onCancel();
+              navigate("/hrDashboard");
+            }}
+          >
+            Cancel
           </button>
         </div>
       </form>
